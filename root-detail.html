@@ -34,6 +34,10 @@
         <h1 class="detail-title" id="title"></h1>
       </div>
 
+      <div id="imageSection" style="display: none; text-align: center; margin: 2rem 0;">
+        <img id="vegetableImage" src="" alt="" style="max-width: 100%; max-height: 500px; border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.1);">
+      </div>
+
       <div class="detail-meaning" id="meaning"></div>
       <div class="detail-description" id="description"></div>
 
@@ -90,6 +94,15 @@
         if (title) title.textContent = item.root;
         if (meaning) meaning.textContent = item.meaning;
         if (description) description.textContent = item.description;
+
+        // 显示图片（如果存在）
+        const imageSection = document.getElementById('imageSection');
+        const vegetableImage = document.getElementById('vegetableImage');
+        if (item.image && imageSection && vegetableImage) {
+          vegetableImage.src = item.image;
+          vegetableImage.alt = item.root;
+          imageSection.style.display = 'block';
+        }
 
         // 渲染案例
         if (examplesList && item.examples) {

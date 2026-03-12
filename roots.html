@@ -73,7 +73,10 @@
             const isMastered = ProgressStorage && ProgressStorage.isMastered(item.id);
             const masteredBadge = isMastered ? ' <span style="color: #10B981;">✓</span>' : '';
 
+            const imageHtml = item.image ? `<img src="${item.image}" alt="${item.root}" style="width: 100%; height: 150px; object-fit: cover; border-radius: 8px 8px 0 0; margin-bottom: 12px;">` : '';
+            
             card.innerHTML = `
+              ${imageHtml}
               <div class="index-card-title">${item.root}${masteredBadge}</div>
               <div class="index-card-category">${item.origin}</div>
               <div class="index-card-meaning">${item.meaning}</div>
