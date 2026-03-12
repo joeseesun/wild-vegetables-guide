@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>野菜详情 - 野菜识别与采食指南</title>
+  <meta name="description" content="查看野菜的详细信息、应用案例和小测试">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌿</text></svg>">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#FBBF24">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/minimal.css">
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav-container">
+      <div class="nav-logo">野菜指南</div>
+      <div class="nav-links">
+        <a href="index.html" class="nav-link">首页</a>
+        <a href="learn.html" class="nav-link">学习</a>
+        <a href="flashcard.html" class="nav-link">闪卡</a>
+        <a href="roots.html" class="nav-link">索引</a>
+        <a href="progress.html" class="nav-link">进度</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="detail-container">
+    <div class="detail-card">
+      <div class="detail-header">
+        <div class="detail-category" id="category"></div>
+        <h1 class="detail-title" id="title"></h1>
+      </div>
+
+      <div class="detail-meaning" id="meaning"></div>
+      <div class="detail-description" id="description"></div>
+
+      <div class="detail-section" id="examplesSection">
+        <h2 class="detail-section-title">应用案例</h2>
+        <div id="examplesList"></div>
+      </div>
+
+      <div class="quiz-section" id="quizSection" style="display: none;">
+        <h3 class="quiz-title">小测试</h3>
+        <div class="quiz-question" id="quizQuestion"></div>
+        <div class="quiz-options" id="quizOptions"></div>
+        <div class="quiz-feedback" id="quizFeedback" style="display: none;"></div>
+      </div>
+
+      <a href="roots.html" class="back-link">← 返回索引</a>
+    </div>
+  </div>
+
+  <script src="js/wordData.js"></script>
+  <script>
+    (function() {
+      try {
+        // 获取URL参数
+        const urlParams = new URLSearchParams(window.location.search);
+        const rootId = parseInt(urlParams.get('id'));
+
+        if (!rootId || !WordRoots) {
+          window.location.href = 'roots.html';
+          return;
+        }
+
+        const item = WordRoots.find(r => r.id === rootId);
+        if (!item) {
+          window.location.href = 'roots.html';
+          return;
+        }
+
+        // 更新页面标题
+        document.title = `${item.root} - 野菜识别与采食指南`;
+
+        // 渲染内容
+        const category = document.getElementById('category');
+        const title = document.getElementById('title');
+        const meaning = document.getElementById('meaning');
+        const description = document.getElementById('description');
+        const examplesList = document.getElementById('examplesList');
+        const quizSection = document.getElementById('quizSection');
+        const quizQuestion = document.getElementById('quizQuestion');
+        const quizOptions = document.getElementById('quizOptions');
+        const quizFeedback = document.getElementById('quizFeedback');
+
+        if (category) category.textContent = item.origin;
+        if (title) title.textContent = item.root;
+        if (meaning) meaning.textContent = item.meaning;
+        if (description) description.textContent = item.description;
+
+        // 渲染案例
+        if (examplesList && item.examples) {
+          examplesList.innerHTML = '';
+          item.examples.forEach(ex => {
+            const div = document.createElement('div');
+            div.className = 'example-item';
+            div.innerHTML = `
+              <div class="example-word">${ex.word} - ${ex.meaning}</div>
+              <div class="example-explanation">${ex.explanation}</div>
+            `;
+            examplesList.appendChild(div);
+          });
+        }
+
+        // 渲染测试题
+        if (item.quiz && quizSection) {
+          quizSection.style.display = 'block';
+          if (quizQuestion) quizQuestion.textContent = item.quiz.question;
+          if (quizOptions) {
+            quizOptions.innerHTML = '';
+            item.quiz.options.forEach((opt, idx) => {
+              const div = document.createElement('div');
+              div.className = 'quiz-option';
+              div.textContent = opt;
+              div.onclick = () => checkAnswer(idx, item.quiz.correctAnswer);
+              quizOptions.appendChild(div);
+            });
+          }
+        }
+
+        function checkAnswer(selected, correct) {
+          const options = document.querySelectorAll('.quiz-option');
+          options.forEach((opt, idx) => {
+            opt.onclick = null;
+            if (idx === correct) {
+              opt.classList.add('correct');
+            } else if (idx === selected && selected !== correct) {
+              opt.classList.add('incorrect');
+            }
+          });
+
+          if (quizFeedback) {
+            quizFeedback.style.display = 'block';
+            if (selected === correct) {
+              quizFeedback.className = 'quiz-feedback correct';
+              quizFeedback.textContent = '✓ 回答正确！';
+            } else {
+              quizFeedback.className = 'quiz-feedback incorrect';
+              quizFeedback.textContent = '✗ 回答错误,正确答案是：' + item.quiz.options[correct];
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Detail page error:', error);
+      }
+    })();
+  </script>
+</body>
+</html>

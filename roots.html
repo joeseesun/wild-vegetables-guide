@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>野菜索引 - 野菜识别与采食指南</title>
+  <meta name="description" content="浏览和搜索30种常见野菜的完整索引">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌿</text></svg>">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#FBBF24">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/minimal.css">
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav-container">
+      <div class="nav-logo">野菜指南</div>
+      <div class="nav-links">
+        <a href="index.html" class="nav-link">首页</a>
+        <a href="learn.html" class="nav-link">学习</a>
+        <a href="flashcard.html" class="nav-link">闪卡</a>
+        <a href="roots.html" class="nav-link active">索引</a>
+        <a href="progress.html" class="nav-link">进度</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="index-container">
+    <div class="container">
+      <div class="index-header">
+        <h1 class="index-title">野菜索引</h1>
+        <div class="index-search">
+          <input type="text" class="search-input" id="searchInput" placeholder="搜索野菜名称或分类...">
+        </div>
+      </div>
+
+      <div class="index-grid" id="indexGrid"></div>
+    </div>
+  </div>
+
+  <script src="js/wordData.js"></script>
+  <script src="js/storage.js"></script>
+  <script>
+    (function() {
+      try {
+        const indexGrid = document.getElementById('indexGrid');
+        const searchInput = document.getElementById('searchInput');
+
+        function renderIndex(filter = '') {
+          if (!indexGrid || !WordRoots) return;
+
+          indexGrid.innerHTML = '';
+
+          const filtered = WordRoots.filter(item => {
+            const searchTerm = filter.toLowerCase();
+            return item.root.toLowerCase().includes(searchTerm) ||
+                   item.origin.toLowerCase().includes(searchTerm) ||
+                   item.meaning.toLowerCase().includes(searchTerm);
+          });
+
+          if (filtered.length === 0) {
+            indexGrid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--color-text-secondary);">没有找到匹配的野菜</p>';
+            return;
+          }
+
+          filtered.forEach(item => {
+            const card = document.createElement('a');
+            card.className = 'index-card';
+            card.href = `root-detail.html?id=${item.id}`;
+
+            const isMastered = ProgressStorage && ProgressStorage.isMastered(item.id);
+            const masteredBadge = isMastered ? ' <span style="color: #10B981;">✓</span>' : '';
+
+            card.innerHTML = `
+              <div class="index-card-title">${item.root}${masteredBadge}</div>
+              <div class="index-card-category">${item.origin}</div>
+              <div class="index-card-meaning">${item.meaning}</div>
+            `;
+
+            indexGrid.appendChild(card);
+          });
+        }
+
+        if (searchInput) {
+          searchInput.addEventListener('input', (e) => {
+            renderIndex(e.target.value);
+          });
+        }
+
+        // 初始渲染
+        renderIndex();
+      } catch (error) {
+        console.error('Index page error:', error);
+      }
+    })();
+  </script>
+</body>
+</html>

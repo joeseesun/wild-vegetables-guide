@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>学习进度 - 野菜识别与采食指南</title>
+  <meta name="description" content="查看您的野菜学习进度和已掌握的野菜列表">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌿</text></svg>">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#FBBF24">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/minimal.css">
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav-container">
+      <div class="nav-logo">野菜指南</div>
+      <div class="nav-links">
+        <a href="index.html" class="nav-link">首页</a>
+        <a href="learn.html" class="nav-link">学习</a>
+        <a href="flashcard.html" class="nav-link">闪卡</a>
+        <a href="roots.html" class="nav-link">索引</a>
+        <a href="progress.html" class="nav-link active">进度</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="progress-container">
+    <h1 style="text-align: center; font-size: 2.5rem; margin-bottom: 2rem;">学习进度</h1>
+
+    <div class="progress-stats">
+      <div class="progress-stat-card">
+        <div class="progress-stat-value" id="masteredCount">0</div>
+        <div class="progress-stat-label">已掌握</div>
+      </div>
+      <div class="progress-stat-card">
+        <div class="progress-stat-value" id="remainingCount">0</div>
+        <div class="progress-stat-label">待学习</div>
+      </div>
+      <div class="progress-stat-card">
+        <div class="progress-stat-value" id="progressPercent">0%</div>
+        <div class="progress-stat-label">完成度</div>
+      </div>
+    </div>
+
+    <div class="progress-section">
+      <h2 class="progress-section-title">已掌握的野菜 (<span id="masteredListCount">0</span>)</h2>
+      <div class="mastered-list" id="masteredList"></div>
+    </div>
+
+    <div style="text-align: center; margin-top: 3rem;">
+      <button class="btn btn-secondary" id="resetBtn">重置进度</button>
+    </div>
+  </div>
+
+  <script src="js/wordData.js"></script>
+  <script src="js/storage.js"></script>
+  <script>
+    (function() {
+      try {
+        const masteredCount = document.getElementById('masteredCount');
+        const remainingCount = document.getElementById('remainingCount');
+        const progressPercent = document.getElementById('progressPercent');
+        const masteredList = document.getElementById('masteredList');
+        const masteredListCount = document.getElementById('masteredListCount');
+        const resetBtn = document.getElementById('resetBtn');
+
+        function renderProgress() {
+          if (!WordRoots || !ProgressStorage) return;
+
+          const mastered = ProgressStorage.getMasteredList();
+          const total = WordRoots.length;
+          const remaining = total - mastered.length;
+          const percent = Math.round((mastered.length / total) * 100);
+
+          // 更新统计
+          if (masteredCount) masteredCount.textContent = mastered.length;
+          if (remainingCount) remainingCount.textContent = remaining;
+          if (progressPercent) progressPercent.textContent = percent + '%';
+          if (masteredListCount) masteredListCount.textContent = mastered.length;
+
+          // 渲染已掌握列表
+          if (masteredList) {
+            masteredList.innerHTML = '';
+
+            if (mastered.length === 0) {
+              masteredList.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--color-text-secondary);">还没有掌握任何野菜,开始学习吧！</p>';
+              return;
+            }
+
+            const masteredRoots = WordRoots.filter(item => mastered.includes(item.id));
+            masteredRoots.forEach(item => {
+              const div = document.createElement('div');
+              div.className = 'mastered-item';
+              div.textContent = `${item.root} - ${item.meaning}`;
+              masteredList.appendChild(div);
+            });
+          }
+        }
+
+        if (resetBtn) {
+          resetBtn.onclick = () => {
+            if (confirm('确定要重置所有学习进度吗？此操作不可撤销。')) {
+              if (ProgressStorage) {
+                ProgressStorage.resetProgress();
+                renderProgress();
+                alert('进度已重置！');
+              }
+            }
+          };
+        }
+
+        // 初始渲染
+        renderProgress();
+      } catch (error) {
+        console.error('Progress page error:', error);
+      }
+    })();
+  </script>
+</body>
+</html>

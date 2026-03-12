@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>野菜识别与采食指南</title>
+
+  <!-- SEO 基础 -->
+  <meta name="description" content="野菜是大自然的馈赠,传承着中华饮食文化的智慧。本站精选30种中国各地常见野菜,详细介绍识别特征、采摘时节、营养价值和烹饪方法,让你安全地享用这些天然绿色食材。">
+  <meta name="keywords" content="野菜,学习,知识,野菜识别,野菜采摘,可食用野菜,荠菜,马齿苋,蒲公英">
+  <meta name="author" content="乔木">
+  <meta name="language" content="zh-CN">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://wild-vegetables.vercel.app/">
+
+  <!-- Open Graph (社交分享) -->
+  <meta property="og:title" content="野菜识别与采食指南">
+  <meta property="og:description" content="野菜是大自然的馈赠,传承着中华饮食文化的智慧。本站精选30种中国各地常见野菜,详细介绍识别特征、采摘时节、营养价值和烹饪方法。">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://wild-vegetables.vercel.app/">
+  <meta property="og:image" content="https://wild-vegetables.vercel.app/icon-512.png">
+  <meta property="og:site_name" content="野菜识别与采食指南">
+  <meta property="og:locale" content="zh_CN">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@vista8">
+  <meta name="twitter:creator" content="@vista8">
+  <meta name="twitter:title" content="野菜识别与采食指南">
+  <meta name="twitter:description" content="野菜是大自然的馈赠,传承着中华饮食文化的智慧。本站精选30种中国各地常见野菜,详细介绍识别特征、采摘时节、营养价值和烹饪方法。">
+  <meta name="twitter:image" content="https://wild-vegetables.vercel.app/icon-512.png">
+
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌿</text></svg>">
+
+  <!-- PWA 支持 -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#FBBF24">
+
+  <!-- iOS Safari PWA 支持 -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="野菜学习">
+  <link rel="apple-touch-icon" href="/icon-192.png">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- 样式 -->
+  <link rel="stylesheet" href="css/minimal.css">
+</head>
+<body>
+  <!-- 导航栏 -->
+  <nav class="nav">
+    <div class="nav-container">
+      <div class="nav-logo">野菜指南</div>
+      <div class="nav-links">
+        <a href="index.html" class="nav-link active">首页</a>
+        <a href="learn.html" class="nav-link">学习</a>
+        <a href="flashcard.html" class="nav-link">闪卡</a>
+        <a href="roots.html" class="nav-link">索引</a>
+        <a href="progress.html" class="nav-link">进度</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero 区 -->
+  <section class="hero">
+    <div class="container">
+      <h1 class="hero-title">
+        <span class="hero-title-line">30种常见野菜</span>
+        <span class="hero-title-line">认识田间山野</span>
+        <span class="hero-title-line">的天然馈赠</span>
+      </h1>
+      <p class="hero-subtitle">从荠菜到马齿苋,从识别到采摘,安全享用大自然的绿色食材</p>
+
+      <!-- 动画演示区 -->
+      <div class="demo-section" id="demoSection">
+        <div class="demo-card" id="demoCard">
+          <div class="demo-card-content">
+            <div class="demo-root" id="demoRoot"></div>
+            <div class="demo-meaning" id="demoMeaning"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CTA 按钮 -->
+      <div class="hero-cta">
+        <a href="learn.html" class="btn btn-primary btn-large">开始认识第一种野菜 →</a>
+        <a href="flashcard.html" class="btn btn-secondary btn-large">闪卡快速认</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 统计卡片 -->
+  <section class="stats">
+    <div class="container">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-value">30</div>
+          <div class="stat-label">常见野菜</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">90+</div>
+          <div class="stat-label">传统食谱</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">四季</div>
+          <div class="stat-label">采摘时令</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 底部介绍 -->
+  <footer class="footer">
+    <div class="container">
+      <p class="footer-tagline">回归自然,品味田野清香</p>
+      <p class="footer-description">
+        野菜是大自然的馈赠,传承着中华饮食文化的智慧。本站精选30种中国各地常见野菜,详细介绍识别特征、采摘时节、营养价值和烹饪方法,让你安全地享用这些天然绿色食材。从春季的荠菜、香椿,到夏季的马齿苋、苋菜,每一种野菜都有独特的风味和养生功效。
+      </p>
+      <p class="footer-credit">Made with ❤️ by <a href="https://twitter.com/vista8" target="_blank">乔木</a></p>
+    </div>
+  </footer>
+
+  <!-- 脚本 -->
+  <script src="js/siteConfig.js"></script>
+  <script src="js/wordData.js"></script>
+  <script>
+    // 首页动画演示
+    (function() {
+      try {
+        const demoCard = document.getElementById('demoCard');
+        const demoRoot = document.getElementById('demoRoot');
+        const demoMeaning = document.getElementById('demoMeaning');
+
+        if (!demoCard || !demoRoot || !demoMeaning || typeof WordRoots === 'undefined') {
+          return;
+        }
+
+        // 取前5个野菜用于演示
+        const demoItems = WordRoots.slice(0, 5);
+        let currentIndex = 0;
+
+        function showNext() {
+          const item = demoItems[currentIndex];
+
+          // 淡出
+          demoCard.style.opacity = '0';
+
+          setTimeout(() => {
+            // 更新内容
+            if (demoRoot && demoMeaning) {
+              demoRoot.textContent = item.root;
+              demoMeaning.textContent = item.meaning;
+            }
+
+            // 淡入
+            demoCard.style.opacity = '1';
+
+            // 下一个
+            currentIndex = (currentIndex + 1) % demoItems.length;
+          }, 300);
+        }
+
+        // 初始显示
+        if (demoItems.length > 0) {
+          demoRoot.textContent = demoItems[0].root;
+          demoMeaning.textContent = demoItems[0].meaning;
+          currentIndex = 1;
+        }
+
+        // 每3秒切换
+        setInterval(showNext, 3000);
+      } catch (error) {
+        console.error('Demo animation error:', error);
+      }
+    })();
+  </script>
+</body>
+</html>

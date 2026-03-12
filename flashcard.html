@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>闪卡复习 - 野菜识别与采食指南</title>
+  <meta name="description" content="通过闪卡快速复习30种常见野菜">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌿</text></svg>">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#FBBF24">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/minimal.css">
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav-container">
+      <div class="nav-logo">野菜指南</div>
+      <div class="nav-links">
+        <a href="index.html" class="nav-link">首页</a>
+        <a href="learn.html" class="nav-link">学习</a>
+        <a href="flashcard.html" class="nav-link active">闪卡</a>
+        <a href="roots.html" class="nav-link">索引</a>
+        <a href="progress.html" class="nav-link">进度</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="flashcard-container">
+    <div class="learn-progress" id="progressText"></div>
+
+    <div class="flashcard" id="flashcard">
+      <div class="flashcard-inner">
+        <div class="flashcard-front">
+          <div class="flashcard-root" id="frontRoot"></div>
+          <div class="flashcard-category" id="frontCategory"></div>
+          <p class="flashcard-hint">点击卡片翻转查看详情</p>
+        </div>
+        <div class="flashcard-back">
+          <div class="flashcard-meaning" id="backMeaning"></div>
+          <div class="flashcard-description" id="backDescription"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flashcard-controls">
+      <button class="btn btn-secondary" id="prevBtn">← 上一张</button>
+      <button class="btn btn-primary" id="flipBtn">翻转卡片</button>
+      <button class="btn btn-secondary" id="nextBtn">下一张 →</button>
+    </div>
+    <p class="flashcard-hint">快捷键：← 上一张 | → 下一张 | 空格 翻转</p>
+  </div>
+
+  <script src="js/wordData.js"></script>
+  <script>
+    (function() {
+      try {
+        let currentIndex = 0;
+        const flashcard = document.getElementById('flashcard');
+        const progressText = document.getElementById('progressText');
+        const frontRoot = document.getElementById('frontRoot');
+        const frontCategory = document.getElementById('frontCategory');
+        const backMeaning = document.getElementById('backMeaning');
+        const backDescription = document.getElementById('backDescription');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const flipBtn = document.getElementById('flipBtn');
+
+        function renderCard() {
+          if (!WordRoots || WordRoots.length === 0) {
+            console.error('No data available');
+            return;
+          }
+
+          const item = WordRoots[currentIndex];
+
+          // 移除翻转状态
+          if (flashcard) flashcard.classList.remove('flipped');
+
+          // 更新内容
+          if (frontRoot) frontRoot.textContent = item.root;
+          if (frontCategory) frontCategory.textContent = item.origin;
+          if (backMeaning) backMeaning.textContent = item.meaning;
+          if (backDescription) backDescription.textContent = item.description.substring(0, 150) + '...';
+
+          // 更新进度
+          if (progressText) {
+            progressText.textContent = `第 ${currentIndex + 1} / ${WordRoots.length} 张`;
+          }
+
+          // 更新按钮状态
+          if (prevBtn) prevBtn.disabled = currentIndex === 0;
+          if (nextBtn) nextBtn.disabled = currentIndex === WordRoots.length - 1;
+        }
+
+        function flipCard() {
+          if (flashcard) {
+            flashcard.classList.toggle('flipped');
+          }
+        }
+
+        if (prevBtn) {
+          prevBtn.onclick = () => {
+            if (currentIndex > 0) {
+              currentIndex--;
+              renderCard();
+            }
+          };
+        }
+
+        if (nextBtn) {
+          nextBtn.onclick = () => {
+            if (currentIndex < WordRoots.length - 1) {
+              currentIndex++;
+              renderCard();
+            }
+          };
+        }
+
+        if (flipBtn) {
+          flipBtn.onclick = flipCard;
+        }
+
+        if (flashcard) {
+          flashcard.onclick = flipCard;
+        }
+
+        // 键盘快捷键
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'ArrowLeft' && currentIndex > 0) {
+            currentIndex--;
+            renderCard();
+          } else if (e.key === 'ArrowRight' && currentIndex < WordRoots.length - 1) {
+            currentIndex++;
+            renderCard();
+          } else if (e.key === ' ') {
+            e.preventDefault();
+            flipCard();
+          }
+        });
+
+        // 初始渲染
+        renderCard();
+      } catch (error) {
+        console.error('Flashcard error:', error);
+      }
+    })();
+  </script>
+</body>
+</html>

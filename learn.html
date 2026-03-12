@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>渐进式学习 - 野菜识别与采食指南</title>
+  <meta name="description" content="渐进式学习30种常见野菜,逐个掌握识别特征、采摘方法和烹饪技巧">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌿</text></svg>">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#FBBF24">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/minimal.css">
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav-container">
+      <div class="nav-logo">野菜指南</div>
+      <div class="nav-links">
+        <a href="index.html" class="nav-link">首页</a>
+        <a href="learn.html" class="nav-link active">学习</a>
+        <a href="flashcard.html" class="nav-link">闪卡</a>
+        <a href="roots.html" class="nav-link">索引</a>
+        <a href="progress.html" class="nav-link">进度</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="learn-container">
+    <div class="learn-progress" id="progressText"></div>
+
+    <div class="learn-card" id="learnCard">
+      <div class="learn-header">
+        <div class="learn-category" id="category"></div>
+        <h1 class="learn-title" id="title"></h1>
+        <div class="learn-meaning" id="meaning"></div>
+      </div>
+
+      <div class="learn-description" id="description"></div>
+
+      <div class="learn-examples" id="examplesSection">
+        <h3 class="learn-examples-title">应用案例</h3>
+        <div id="examplesList"></div>
+      </div>
+
+      <div class="quiz-section" id="quizSection" style="display: none;">
+        <h3 class="quiz-title">小测试</h3>
+        <div class="quiz-question" id="quizQuestion"></div>
+        <div class="quiz-options" id="quizOptions"></div>
+        <div class="quiz-feedback" id="quizFeedback" style="display: none;"></div>
+      </div>
+
+      <div class="learn-nav">
+        <button class="btn btn-secondary btn-nav" id="prevBtn">← 上一个</button>
+        <button class="btn btn-primary btn-nav" id="masteredBtn">已掌握 ✓</button>
+        <button class="btn btn-primary btn-nav" id="nextBtn">下一个 →</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/wordData.js"></script>
+  <script src="js/storage.js"></script>
+  <script>
+    (function() {
+      try {
+        let currentIndex = 0;
+        const progressText = document.getElementById('progressText');
+        const category = document.getElementById('category');
+        const title = document.getElementById('title');
+        const meaning = document.getElementById('meaning');
+        const description = document.getElementById('description');
+        const examplesList = document.getElementById('examplesList');
+        const quizSection = document.getElementById('quizSection');
+        const quizQuestion = document.getElementById('quizQuestion');
+        const quizOptions = document.getElementById('quizOptions');
+        const quizFeedback = document.getElementById('quizFeedback');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const masteredBtn = document.getElementById('masteredBtn');
+
+        function renderLearn() {
+          if (!WordRoots || WordRoots.length === 0) {
+            console.error('No data available');
+            return;
+          }
+
+          const item = WordRoots[currentIndex];
+
+          // 更新进度
+          if (progressText) {
+            progressText.textContent = `第 ${currentIndex + 1} / ${WordRoots.length} 个野菜`;
+          }
+
+          // 更新内容
+          if (category) category.textContent = item.origin;
+          if (title) title.textContent = item.root;
+          if (meaning) meaning.textContent = item.meaning;
+          if (description) description.textContent = item.description;
+
+          // 渲染案例
+          if (examplesList && item.examples) {
+            examplesList.innerHTML = '';
+            item.examples.forEach(ex => {
+              const div = document.createElement('div');
+              div.className = 'example-item';
+              div.innerHTML = `
+                <div class="example-word">${ex.word} - ${ex.meaning}</div>
+                <div class="example-explanation">${ex.explanation}</div>
+              `;
+              examplesList.appendChild(div);
+            });
+          }
+
+          // 渲染测试题
+          if (item.quiz && quizSection) {
+            quizSection.style.display = 'block';
+            if (quizQuestion) quizQuestion.textContent = item.quiz.question;
+            if (quizOptions) {
+              quizOptions.innerHTML = '';
+              item.quiz.options.forEach((opt, idx) => {
+                const div = document.createElement('div');
+                div.className = 'quiz-option';
+                div.textContent = opt;
+                div.onclick = () => checkAnswer(idx, item.quiz.correctAnswer);
+                quizOptions.appendChild(div);
+              });
+            }
+            if (quizFeedback) quizFeedback.style.display = 'none';
+          }
+
+          // 更新按钮状态
+          if (prevBtn) prevBtn.disabled = currentIndex === 0;
+          if (nextBtn) nextBtn.disabled = currentIndex === WordRoots.length - 1;
+
+          // 检查是否已掌握
+          updateMasteredButton();
+        }
+
+        function checkAnswer(selected, correct) {
+          const options = document.querySelectorAll('.quiz-option');
+          options.forEach((opt, idx) => {
+            opt.onclick = null;
+            if (idx === correct) {
+              opt.classList.add('correct');
+            } else if (idx === selected && selected !== correct) {
+              opt.classList.add('incorrect');
+            }
+          });
+
+          if (quizFeedback) {
+            quizFeedback.style.display = 'block';
+            if (selected === correct) {
+              quizFeedback.className = 'quiz-feedback correct';
+              quizFeedback.textContent = '✓ 回答正确！';
+            } else {
+              quizFeedback.className = 'quiz-feedback incorrect';
+              quizFeedback.textContent = '✗ 回答错误,正确答案是：' + WordRoots[currentIndex].quiz.options[correct];
+            }
+          }
+        }
+
+        function updateMasteredButton() {
+          if (!masteredBtn || !WordRoots[currentIndex]) return;
+
+          const isMastered = ProgressStorage && ProgressStorage.isMastered(WordRoots[currentIndex].id);
+          if (isMastered) {
+            masteredBtn.textContent = '✓ 已掌握';
+            masteredBtn.classList.add('btn-secondary');
+            masteredBtn.classList.remove('btn-primary');
+          } else {
+            masteredBtn.textContent = '标记为已掌握';
+            masteredBtn.classList.add('btn-primary');
+            masteredBtn.classList.remove('btn-secondary');
+          }
+        }
+
+        if (prevBtn) {
+          prevBtn.onclick = () => {
+            if (currentIndex > 0) {
+              currentIndex--;
+              renderLearn();
+              window.scrollTo(0, 0);
+            }
+          };
+        }
+
+        if (nextBtn) {
+          nextBtn.onclick = () => {
+            if (currentIndex < WordRoots.length - 1) {
+              currentIndex++;
+              renderLearn();
+              window.scrollTo(0, 0);
+            }
+          };
+        }
+
+        if (masteredBtn) {
+          masteredBtn.onclick = () => {
+            const item = WordRoots[currentIndex];
+            if (ProgressStorage) {
+              ProgressStorage.toggleMastered(item.id);
+              updateMasteredButton();
+            }
+          };
+        }
+
+        // 初始渲染
+        renderLearn();
+      } catch (error) {
+        console.error('Learn page error:', error);
+      }
+    })();
+  </script>
+</body>
+</html>
