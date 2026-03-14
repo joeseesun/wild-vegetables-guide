@@ -33,11 +33,17 @@
     <div class="flashcard" id="flashcard">
       <div class="flashcard-inner">
         <div class="flashcard-front">
+          <div id="frontImage" style="display: none; margin-bottom: 1rem;">
+            <img id="frontImg" src="" alt="" style="max-width: 100%; max-height: 200px; border-radius: 8px; object-fit: cover;">
+          </div>
           <div class="flashcard-root" id="frontRoot"></div>
           <div class="flashcard-category" id="frontCategory"></div>
           <p class="flashcard-hint">点击卡片翻转查看详情</p>
         </div>
         <div class="flashcard-back">
+          <div id="backImage" style="display: none; margin-bottom: 1rem;">
+            <img id="backImg" src="" alt="" style="max-width: 100%; max-height: 180px; border-radius: 8px; object-fit: cover;">
+          </div>
           <div class="flashcard-meaning" id="backMeaning"></div>
           <div class="flashcard-description" id="backDescription"></div>
         </div>
@@ -61,8 +67,12 @@
         const progressText = document.getElementById('progressText');
         const frontRoot = document.getElementById('frontRoot');
         const frontCategory = document.getElementById('frontCategory');
+        const frontImage = document.getElementById('frontImage');
+        const frontImg = document.getElementById('frontImg');
         const backMeaning = document.getElementById('backMeaning');
         const backDescription = document.getElementById('backDescription');
+        const backImage = document.getElementById('backImage');
+        const backImg = document.getElementById('backImg');
         const prevBtn = document.getElementById('prevBtn');
         const nextBtn = document.getElementById('nextBtn');
         const flipBtn = document.getElementById('flipBtn');
@@ -83,6 +93,23 @@
           if (frontCategory) frontCategory.textContent = item.origin;
           if (backMeaning) backMeaning.textContent = item.meaning;
           if (backDescription) backDescription.textContent = item.description.substring(0, 150) + '...';
+
+          // 更新图片
+          if (item.image) {
+            if (frontImage && frontImg) {
+              frontImg.src = item.image;
+              frontImg.alt = item.root;
+              frontImage.style.display = 'block';
+            }
+            if (backImage && backImg) {
+              backImg.src = item.image;
+              backImg.alt = item.root;
+              backImage.style.display = 'block';
+            }
+          } else {
+            if (frontImage) frontImage.style.display = 'none';
+            if (backImage) backImage.style.display = 'none';
+          }
 
           // 更新进度
           if (progressText) {
